@@ -9,7 +9,8 @@ on:
 
 env:
   DOCKER_REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  # GHCR requires lowercase repository names
+  IMAGE_NAME: ${{ github.repository_owner }}/agents-swarm
 
 jobs:
   test:
