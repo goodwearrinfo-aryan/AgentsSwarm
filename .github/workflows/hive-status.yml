@@ -1,0 +1,232 @@
+name: Generate Hive Status
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'  # Every 2 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  generate-status:
+    name: Generate Status JSON
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update && sudo apt install -y gh
+
+      - name: Generate status JSON
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/generate_status.py > status.json
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          keep_files: false
+
+  deploy-html:
+    name: Deploy HTML Viewer
+    runs-on: ubuntu-latest
+    needs: generate-status
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Create HTML viewer
+        run: |
+          cat > index.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentsSwarm Hive Status</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 16px; background: #f5f5f5; color: #1a1a1a; line-height: 1.5; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .meta { color: #666; font-size: 0.85rem; margin-bottom: 1rem; }
+    .grid { display: grid; gap: 12px; }
+    .card { background: white; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .card h2 { font-size: 1rem; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+    .badge-healthy { background: #d4edda; color: #155724; }
+    .badge-warning { background: #fff3cd; color: #856404; }
+    .badge-danger { background: #f8d7da; color: #721c24; }
+    .badge-info { background: #d1ecf1; color: #0c5460; }
+    .agent-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+    .agent-row:last-child { border-bottom: none; }
+    .agent-info { display: flex; flex-direction: column; gap: 2px; }
+    .agent-name { font-weight: 600; font-size: 0.9rem; }
+    .agent-role { font-size: 0.75rem; color: #666; }
+    .task-row { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+    .task-row:last-child { border-bottom: none; }
+    .task-title { font-weight: 600; }
+    .task-meta { color: #666; font-size: 0.75rem; margin-top: 2px; }
+    .output-row { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.8rem; }
+    .output-row:last-child { border-bottom: none; }
+    .output-agent { font-weight: 600; color: #333; }
+    .output-file { color: #666; font-size: 0.75rem; }
+    .output-preview { color: #888; font-size: 0.7rem; margin-top: 2px; white-space: pre-wrap; max-height: 40px; overflow: hidden; }
+    .refresh-btn { position: fixed; bottom: 20px; right: 20px; background: #007bff; color: white; border: none; border-radius: 50%; width: 56px; height: 56px; font-size: 1.5rem; box-shadow: 0 2px 8px rgba(0,123,255,0.3); cursor: pointer; }
+    .refresh-btn:active { transform: scale(0.95); }
+    .blocked { color: #dc3545; font-weight: 600; }
+    .links { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+    .links a { color: #007bff; text-decoration: none; font-size: 0.85rem; }
+    .links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🐝 AgentsSwarm Hive Status</h1>
+    <div class="meta" id="meta">Loading...</div>
+
+    <div class="card">
+      <h2>🤖 Agents (<span id="agent-count">-</span>)</h2>
+      <div class="grid" id="agents"></div>
+    </div>
+
+    <div class="card">
+      <h2>📋 Tasks</h2>
+      <div class="grid" id="tasks"></div>
+    </div>
+
+    <div class="card">
+      <h2>📦 Recent Outputs</h2>
+      <div class="grid" id="outputs"></div>
+    </div>
+
+    <div class="card">
+      <h2>🔗 Links</h2>
+      <div class="links">
+        <a href="https://github.com/goodwearrinfo-aryan/AgentsSwarm/actions" target="_blank">GitHub Actions</a>
+        <a href="https://github.com/goodwearrinfo-aryan/AgentsSwarm" target="_blank">Repository</a>
+        <a href="status.json" target="_blank">Raw JSON</a>
+      </div>
+    </div>
+  </div>
+
+  <button class="refresh-btn" onclick="location.reload()" aria-label="Refresh">↻</button>
+
+  <script>
+    async function loadStatus() {
+      try {
+        const res = await fetch('status.json?t=' + Date.now());
+        const data = await res.json();
+        render(data);
+      } catch (e) {
+        console.error('Failed to load status', e);
+        document.getElementById('meta').textContent = 'Failed to load status';
+      }
+    }
+
+    function render(data) {
+      const ts = new Date(data.timestamp).toLocaleString();
+      document.getElementById('meta').textContent = `Updated: ${ts} | CI: ${data.ci.conclusion || 'unknown'} (${data.ci.status || 'unknown'})`;
+
+      // Agents
+      const agentsHtml = (data.agents || []).map(a => `
+        <div class="agent-row">
+          <div class="agent-info">
+            <span class="agent-name">${a.name}</span>
+            <span class="agent-role">${a.role}</span>
+          </div>
+          <div>
+            <span class="badge ${getBadgeClass(a.circuit_breaker)}">${a.circuit_breaker}</span>
+            ${a.current_task ? `<span class="badge badge-info" style="margin-left:4px">${a.current_task}</span>` : ''}
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('agents').innerHTML = agentsHtml;
+      document.getElementById('agent-count').textContent = data.agents?.length || 0;
+
+      // Tasks
+      const tasksHtml = (data.tasks || []).map(t => `
+        <div class="task-row">
+          <div class="task-title">${t.id}: ${t.title || t.name || 'Untitled'}</div>
+          <div class="task-meta">
+            Status: <span class="badge ${getTaskBadgeClass(t.status)}">${t.status}</span>
+            ${t.assignee ? ` | Assignee: ${t.assignee}` : ''}
+            ${t.priority ? ` | Priority: ${t.priority}` : ''}
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('tasks').innerHTML = tasksHtml || '<div class="task-row">No tasks</div>';
+
+      // Outputs
+      const outputsHtml = (data.recent_outputs || []).map(o => `
+        <div class="output-row">
+          <div class="output-agent">${o.agent}</div>
+          <div class="output-file">${o.file}</div>
+          <div class="output-preview">${o.preview}</div>
+        </div>
+      `).join('');
+      document.getElementById('outputs').innerHTML = outputsHtml || '<div class="output-row">No recent outputs</div>';
+
+      // Blocked
+      if (data.blocked && data.blocked.length) {
+        const blockedDiv = document.createElement('div');
+        blockedDiv.className = 'card';
+        blockedDiv.innerHTML = '<h2>🚫 Blocked</h2>' + data.blocked.map(b => `
+          <div class="task-row blocked">${b.task}: ${b.reason} (Owner: ${b.owner})</div>
+        `).join('');
+        document.querySelector('.container').appendChild(blockedDiv);
+      }
+    }
+
+    function getBadgeClass(status) {
+      if (status === 'HEALTHY') return 'badge-healthy';
+      if (status === 'CONSTRAINED') return 'badge-warning';
+      return 'badge-danger';
+    }
+
+    function getTaskBadgeClass(status) {
+      if (status === 'done' || status === 'completed') return 'badge-healthy';
+      if (status === 'in_progress' || status === 'working') return 'badge-info';
+      if (status === 'pending' || status === 'blocked') return 'badge-warning';
+      return 'badge-danger';
+    }
+
+    loadStatus();
+    setInterval(loadStatus, 60000); // Auto-refresh every 60s
+  </script>
+</body>
+</html>
+HTMLEOF
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          keep_files: true
