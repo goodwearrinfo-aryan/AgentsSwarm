@@ -1,24 +1,124 @@
-import os
-import json
+import ast
+import operator
 import re
-from backend.app.tools.base import SwarmTool
+from crewai.tools import tool
 
-class CalculatorTool(SwarmTool):
-    name = "CalculatorTool"
-    description = "Evaluates basic arithmetic expressions safely. Input: a mathematical string (e.g. '2 * 3 + 4'). Output: JSON with result."
 
-    async def _run(self, input: str) -> str:
-        expr = input.strip()
-        if not expr:
-            return json.dumps({"error": "Empty expression"})
-            
-        # Basic validation: only digits, spaces, and operators (+, -, *, /, (, ))
-        if not re.match(r"^[0-9+\-*/().\s]+$", expr):
-            return json.dumps({"error": "Invalid character in expression"})
-            
+# Safe operators mapping
+SAFE_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.Pow: operator.pow,
+    ast.Mod: operator.mod,
+    ast.FloorDiv: operator.floordiv,
+}
+
+
+class SafeEvaluator(ast.NodeVisitor):
+    """Safely evaluate mathematical expressions using AST."""
+    
+    def __init__(self):
+        self.result = None
+    
+    def visit_BinOp(self, node):
+        left = self.visit(node.left)
+        right = self.visit(node.right)
+        op_type = type(node.op)
+        
+        if op_type in SAFE_OPERATORS:
+            self.result = SAFE_OPERATORS[op_type](left, right)
+        else:
+            raise ValueError(f"Unsupported operator: {op_type}")
+        
+        return self.result
+    
+    def visit_Num(self, node):
+        return node.n
+    
+    def visit_UnaryOp(self, node):
+        operand = self.visit(node.operand)
+        if isinstance(node.op, ast.USub):
+            return -operand
+        elif isinstance(node.op, ast.UAdd):
+            return operand
+        return operand
+    
+    def visit_Constant(self, node):
+        return node.value
+
+
+cat > backend/app/tools/calculator_tool.py << 'EOF'
+import ast
+import operator
+import re
+from crewai.tools import tool
+
+
+# Safe operators mapping
+SAFE_OPERATORS = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.Pow: operator.pow,
+    ast.Mod: operator.mod,
+    ast.FloorDiv: operator.floordiv,
+}
+
+
+class SafeEvaluator(ast.NodeVisitor):
+    """Safely evaluate mathematical expressions using AST."""
+    
+    def __init__(self):
+        self.result = None
+    
+    def visit_BinOp(self, node):
+        left = self.visit(node.left)
+        right = self.visit(node.right)
+        op_type = type(node.op)
+        
+        if op_type in SAFE_OPERATORS:
+            self.result = SAFE_OPERATORS[op_type](left, right)
+        else:
+            raise ValueError(f"Unsupported operator: {op_type}")
+        
+        return self.result
+    
+    def visit_Num(self, node):
+        return node.n
+    
+    def visit_UnaryOp(self, node):
+        operand = self.visit(node.operand)
+        if isinstance(node.op, ast.USub):
+            return -operand
+        elif isinstance(node.op, ast.UAdd):
+            return operand
+        return operand
+    
+    def visit_Constant(self, node):
+        return node.value
+
+
+@tool("CalculatorTool")
+class CalculatorTool:
+    """
+    Safely evaluates mathematical expressions.
+    Uses AST-based parsing instead of eval() for security.
+    """
+    
+    def _run(self, expression: str) -> str:
+        """Evaluate a mathematical expression safely."""
+        sanitized = re.sub(r'[^0-9+\-*/().\s]', '', expression)
+        
+        if not sanitized or sanitized.count('(') != sanitized.count(')'):
+            return "Error: Invalid expression"
+        
         try:
-            # Note: eval is safe here because we strict-validate the characters with regex
-            res = eval(expr, {"__builtins__": None}, {})
-            return json.dumps({"expression": expr, "result": float(res)})
+            tree = ast.parse(sanitized, mode='eval')
+            evaluator = SafeEvaluator()
+            result = evaluator.visit(tree.body)
+            return f"Result: {result}"
         except Exception as e:
-            return json.dumps({"expression": expr, "error": str(e)})
+            return f"Error: {str(e)}"
