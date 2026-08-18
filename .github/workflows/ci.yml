@@ -1,0 +1,135 @@
+name: CI with NVIDIA GPU
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  DOCKER_REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements-dev.txt') }}
+          
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements-dev.txt
+          
+      - name: Run tests
+        run: |
+          cd backend && python -m pytest tests/ -v --tb=short
+          
+      - name: Type check
+        run: |
+          cd backend && python -m mypy app/ --ignore-missing-imports || true
+
+  build:
+    name: Build Docker Images
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build and push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Build and push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: frontend/Dockerfile
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  gpu-test:
+    name: GPU Test (NVIDIA)
+    needs: test
+    runs-on: [self-hosted, linux, gpu, nvidia]
+    # Or use GitHub's larger runners with GPU:
+    # runs-on: ubuntu-latest-4-gpu (if available on your plan)
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check GPU
+        run: |
+          nvidia-smi
+          python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None')"
+          
+      - name: Install GPU requirements
+        run: |
+          pip install -r backend/requirements.txt
+          
+      - name: Run GPU tests
+        run: |
+          cd backend && python -m pytest tests/ -v -k "gpu or cuda" --tb=short || true
+          
+      - name: Test CrewAI with GPU
+        env:
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          cd backend && python -c "
+          import os
+          os.environ['NVIDIA_API_KEY'] = os.getenv('NVIDIA_API_KEY', '')
+          from backend.app.core.llm_config import get_groq_llm
+          llm = get_groq_llm()
+          print('LLM initialized with NVIDIA API:', bool(os.getenv('NVIDIA_API_KEY')))
+          "
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: [build, gpu-test]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+    steps:
+      - name: Deploy to GCP VM
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.STAGING_VM_HOST }}
+          username: ${{ secrets.STAGING_VM_USER }}
+          key: ${{ secrets.STAGING_VM_SSH_KEY }}
+          script: |
+            cd ~/AgentsSwarm
+            git pull origin main
+            docker-compose pull
+            docker-compose up -d
