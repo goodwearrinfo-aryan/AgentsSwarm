@@ -2,7 +2,7 @@ name: Generate Hive Status
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # Every 2 minutes
+    - cron: '*/2 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -105,26 +105,26 @@ jobs:
 </head>
 <body>
   <div class="container">
-    <h1>🐝 AgentsSwarm Hive Status</h1>
+    <h1>AgentsSwarm Hive Status</h1>
     <div class="meta" id="meta">Loading...</div>
 
     <div class="card">
-      <h2>🤖 Agents (<span id="agent-count">-</span>)</h2>
+      <h2>Agents (<span id="agent-count">-</span>)</h2>
       <div class="grid" id="agents"></div>
     </div>
 
     <div class="card">
-      <h2>📋 Tasks</h2>
+      <h2>Tasks</h2>
       <div class="grid" id="tasks"></div>
     </div>
 
     <div class="card">
-      <h2>📦 Recent Outputs</h2>
+      <h2>Recent Outputs</h2>
       <div class="grid" id="outputs"></div>
     </div>
 
     <div class="card">
-      <h2>🔗 Links</h2>
+      <h2>Links</h2>
       <div class="links">
         <a href="https://github.com/goodwearrinfo-aryan/AgentsSwarm/actions" target="_blank">GitHub Actions</a>
         <a href="https://github.com/goodwearrinfo-aryan/AgentsSwarm" target="_blank">Repository</a>
@@ -133,7 +133,7 @@ jobs:
     </div>
   </div>
 
-  <button class="refresh-btn" onclick="location.reload()" aria-label="Refresh">↻</button>
+  <button class="refresh-btn" onclick="location.reload()" aria-label="Refresh">R</button>
 
   <script>
     async function loadStatus() {
@@ -149,54 +149,50 @@ jobs:
 
     function render(data) {
       const ts = new Date(data.timestamp).toLocaleString();
-      document.getElementById('meta').textContent = `Updated: ${ts} | CI: ${data.ci.conclusion || 'unknown'} (${data.ci.status || 'unknown'})`;
+      document.getElementById('meta').textContent = 'Updated: ' + ts + ' | CI: ' + (data.ci.conclusion || 'unknown') + ' (' + (data.ci.status || 'unknown') + ')';
 
-      // Agents
-      const agentsHtml = (data.agents || []).map(a => `
+      const agentsHtml = (data.agents || []).map(a => '
         <div class="agent-row">
           <div class="agent-info">
-            <span class="agent-name">${a.name}</span>
-            <span class="agent-role">${a.role}</span>
+            <span class="agent-name">' + a.name + '</span>
+            <span class="agent-role">' + a.role + '</span>
           </div>
           <div>
-            <span class="badge ${getBadgeClass(a.circuit_breaker)}">${a.circuit_breaker}</span>
-            ${a.current_task ? `<span class="badge badge-info" style="margin-left:4px">${a.current_task}</span>` : ''}
+            <span class="badge ' + getBadgeClass(a.circuit_breaker) + '">' + a.circuit_breaker + '</span>
+            ' + (a.current_task ? '<span class="badge badge-info" style="margin-left:4px">' + a.current_task + '</span>' : '') + '
           </div>
         </div>
-      `).join('');
+      ').join('');
       document.getElementById('agents').innerHTML = agentsHtml;
       document.getElementById('agent-count').textContent = data.agents?.length || 0;
 
-      // Tasks
-      const tasksHtml = (data.tasks || []).map(t => `
+      const tasksHtml = (data.tasks || []).map(t => '
         <div class="task-row">
-          <div class="task-title">${t.id}: ${t.title || t.name || 'Untitled'}</div>
+          <div class="task-title">' + t.id + ': ' + (t.title || t.name || 'Untitled') + '</div>
           <div class="task-meta">
-            Status: <span class="badge ${getTaskBadgeClass(t.status)}">${t.status}</span>
-            ${t.assignee ? ` | Assignee: ${t.assignee}` : ''}
-            ${t.priority ? ` | Priority: ${t.priority}` : ''}
+            Status: <span class="badge ' + getTaskBadgeClass(t.status) + '">' + t.status + '</span>
+            ' + (t.assignee ? ' | Assignee: ' + t.assignee : '') + '
+            ' + (t.priority ? ' | Priority: ' + t.priority : '') + '
           </div>
         </div>
-      `).join('');
+      ').join('');
       document.getElementById('tasks').innerHTML = tasksHtml || '<div class="task-row">No tasks</div>';
 
-      // Outputs
-      const outputsHtml = (data.recent_outputs || []).map(o => `
+      const outputsHtml = (data.recent_outputs || []).map(o => '
         <div class="output-row">
-          <div class="output-agent">${o.agent}</div>
-          <div class="output-file">${o.file}</div>
-          <div class="output-preview">${o.preview}</div>
+          <div class="output-agent">' + o.agent + '</div>
+          <div class="output-file">' + o.file + '</div>
+          <div class="output-preview">' + o.preview + '</div>
         </div>
-      `).join('');
+      ').join('');
       document.getElementById('outputs').innerHTML = outputsHtml || '<div class="output-row">No recent outputs</div>';
 
-      // Blocked
       if (data.blocked && data.blocked.length) {
         const blockedDiv = document.createElement('div');
         blockedDiv.className = 'card';
-        blockedDiv.innerHTML = '<h2>🚫 Blocked</h2>' + data.blocked.map(b => `
-          <div class="task-row blocked">${b.task}: ${b.reason} (Owner: ${b.owner})</div>
-        `).join('');
+        blockedDiv.innerHTML = '<h2>Blocked</h2>' + data.blocked.map(b => '
+          <div class="task-row blocked">' + b.task + ': ' + b.reason + ' (Owner: ' + b.owner + ')</div>
+        ').join('');
         document.querySelector('.container').appendChild(blockedDiv);
       }
     }
@@ -215,11 +211,12 @@ jobs:
     }
 
     loadStatus();
-    setInterval(loadStatus, 60000); // Auto-refresh every 60s
+    setInterval(loadStatus, 60000);
   </script>
 </body>
 </html>
 HTMLEOF
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
