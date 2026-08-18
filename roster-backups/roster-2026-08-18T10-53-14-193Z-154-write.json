@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "savedAt": "2026-08-18T11:02:48.539Z",
+  "savedAt": "2026-08-18T10:53:12.945Z",
   "agents": [
     {
       "id": "god",
@@ -12,16 +12,15 @@
       "tmuxTarget": "",
       "cwd": "/Users/aryanagarwal/AgentsSwarm",
       "status": "working",
-      "action": "using bash",
+      "action": "awaiting",
       "progress": 0,
-      "currentStation": "terminal",
+      "currentStation": "desk",
       "ptyId": "pty-god",
       "command": "opencode --model claude-opus-4-8",
       "provider": "opencode",
       "model": "claude-opus-4-8",
       "isGod": true,
-      "carrying": "Bash",
-      "lastPrompt": "kevin too"
+      "lastPrompt": "creat more workers and more repos to sync"
     },
     {
       "id": "jim-msyh6cu8",
@@ -59,8 +58,7 @@
       "currentStation": "desk",
       "ptyId": "pty-pam-msyj5z8f",
       "command": "opencode",
-      "provider": "opencode",
-      "lastPrompt": "yes"
+      "provider": "opencode"
     },
     {
       "id": "dwight-msyj7d6l",
@@ -75,33 +73,28 @@
       "status": "idle",
       "action": "idle",
       "progress": 0,
-      "currentStation": "desk",
+      "currentStation": "terminal",
       "ptyId": "pty-dwight-msyj7d6l",
       "command": "opencode",
       "provider": "opencode",
       "lastPrompt": "all"
-    },
-    {
-      "id": "kevin-msyjnwo4",
-      "name": "Kevin",
-      "character": "kevin",
-      "accent": "sky",
-      "description": "on standby",
-      "project": "futures-bot-live",
-      "tmuxTarget": "",
-      "cwd": "/Users/aryanagarwal/futures-bot-live",
-      "goal": "Track what has shipped since the last release, update the changelog and version, and draft clear release notes.",
-      "status": "idle",
-      "action": "idle",
-      "progress": 0,
-      "currentStation": "desk",
-      "ptyId": "pty-kevin-msyjnwo4",
-      "command": "opencode",
-      "provider": "opencode"
     }
   ],
   "archived": [],
   "restorable": [],
-  "queues": {},
-  "selectedId": "god"
+  "queues": {
+    "jim-msyh6cu8": [
+      {
+        "id": "q-1787049751861-13",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787049751861
+      },
+      {
+        "id": "q-1787049779846-14",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787049779846
+      }
+    ]
+  },
+  "selectedId": "dwight-msyj7d6l"
 }

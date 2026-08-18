@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "savedAt": "2026-08-18T11:02:48.539Z",
+  "savedAt": "2026-08-18T11:02:37.757Z",
   "agents": [
     {
       "id": "god",
@@ -102,6 +102,24 @@
   ],
   "archived": [],
   "restorable": [],
-  "queues": {},
-  "selectedId": "god"
+  "queues": {
+    "god": [
+      {
+        "id": "q-1787050507850-26",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787050507850
+      },
+      {
+        "id": "q-1787050615850-27",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787050615850
+      },
+      {
+        "id": "q-1787050915852-28",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787050915852
+      }
+    ]
+  },
+  "selectedId": "jim-msyh6cu8"
 }
