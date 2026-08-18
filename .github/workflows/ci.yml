@@ -88,6 +88,8 @@ jobs:
           tags: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_APP_URL=https://agents-swarm.${{ github.repository_owner }}.github.io
 
   gpu-test:
     name: GPU Test (NVIDIA)

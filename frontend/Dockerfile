@@ -3,6 +3,10 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+# Build arg for VITE_APP_URL (required by generate-cli.js prebuild script)
+ARG VITE_APP_URL=https://agents-swarm.local
+ENV VITE_APP_URL=${VITE_APP_URL}
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
