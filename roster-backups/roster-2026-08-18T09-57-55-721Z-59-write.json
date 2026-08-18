@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "savedAt": "2026-08-18T10:04:42.290Z",
+  "savedAt": "2026-08-18T09:57:49.721Z",
   "agents": [
     {
       "id": "god",
@@ -11,16 +11,15 @@
       "project": "hive",
       "tmuxTarget": "",
       "cwd": "/Users/aryanagarwal/AgentsSwarm",
-      "status": "working",
-      "action": "using bash",
+      "status": "idle",
+      "action": "awaiting",
       "progress": 0,
-      "currentStation": "terminal",
+      "currentStation": "desk",
       "ptyId": "pty-god",
       "command": "opencode --model claude-opus-4-8",
       "provider": "opencode",
       "model": "claude-opus-4-8",
       "isGod": true,
-      "carrying": "Bash",
       "lastPrompt": "yes"
     },
     {
@@ -46,6 +45,14 @@
   ],
   "archived": [],
   "restorable": [],
-  "queues": {},
+  "queues": {
+    "god": [
+      {
+        "id": "q-1787046867826-7",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787046867826
+      }
+    ]
+  },
   "selectedId": "god"
 }

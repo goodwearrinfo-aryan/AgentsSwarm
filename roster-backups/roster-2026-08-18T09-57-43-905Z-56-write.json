@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "savedAt": "2026-08-18T10:04:42.290Z",
+  "savedAt": "2026-08-18T09:57:35.575Z",
   "agents": [
     {
       "id": "god",
@@ -46,6 +46,24 @@
   ],
   "archived": [],
   "restorable": [],
-  "queues": {},
+  "queues": {
+    "god": [
+      {
+        "id": "q-1787046795826-4",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787046795826
+      },
+      {
+        "id": "q-1787046843825-6",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787046843825
+      },
+      {
+        "id": "q-1787046867826-7",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787046867826
+      }
+    ]
+  },
   "selectedId": "god"
 }
