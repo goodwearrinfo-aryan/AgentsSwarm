@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "savedAt": "2026-08-18T09:51:01.080Z",
+  "savedAt": "2026-08-18T09:45:51.918Z",
   "agents": [
     {
       "id": "god",
@@ -21,7 +21,7 @@
       "model": "claude-opus-4-8",
       "isGod": true,
       "carrying": "Bash",
-      "lastPrompt": "yes"
+      "lastPrompt": "use github and nvidia api keys"
     },
     {
       "id": "jim-msyh6cu8",
@@ -40,20 +40,11 @@
       "ptyId": "pty-jim-msyh6cu8",
       "command": "opencode",
       "provider": "opencode",
-      "worktreePath": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
-      "lastPrompt": "go"
+      "worktreePath": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8"
     }
   ],
   "archived": [],
   "restorable": [],
-  "queues": {
-    "jim-msyh6cu8": [
-      {
-        "id": "q-1787046627822-2",
-        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
-        "ts": 1787046627822
-      }
-    ]
-  },
-  "selectedId": "jim-msyh6cu8"
+  "queues": {},
+  "selectedId": "god"
 }
