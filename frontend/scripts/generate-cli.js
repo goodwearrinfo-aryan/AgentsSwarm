@@ -34,17 +34,18 @@ const env = loadEnv();
 
 const appUrl =
   env.VITE_APP_URL ||                              // 1. Local .env  →  VITE_APP_URL
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL        // 2. Vercel auto →  production URL
+  process.env.VITE_APP_URL ||                      // 2. Docker/build env → VITE_APP_URL
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL        // 3. Vercel auto →  production URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : null) ||
-  (process.env.VERCEL_URL                           // 3. Vercel auto →  deployment URL
+  (process.env.VERCEL_URL                           // 4. Vercel auto →  deployment URL
     ? `https://${process.env.VERCEL_URL}`
     : null);
 
 if (!appUrl) {
   console.error('[generate-cli] ❌ ERROR: No app URL found!');
   console.error('  Set one of these env vars:');
-  console.error('  - VITE_APP_URL  (in frontend/.env)');
+  console.error('  - VITE_APP_URL  (in frontend/.env or build env)');
   console.error('  - VERCEL_PROJECT_PRODUCTION_URL  (auto-set by Vercel)');
   console.error('  - VERCEL_URL  (auto-set by Vercel)');
   process.exit(1);
@@ -125,5 +126,3 @@ try {
 } catch {
   console.warn('[generate-cli] ⚠️  Could not copy nexsus.ps1 from backend — skipping');
 }
-
-
