@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "savedAt": "2026-08-18T10:45:04.076Z",
+  "savedAt": "2026-08-18T10:45:00.860Z",
   "agents": [
     {
       "id": "god",
@@ -12,9 +12,9 @@
       "tmuxTarget": "",
       "cwd": "/Users/aryanagarwal/AgentsSwarm",
       "status": "idle",
-      "action": "awaiting",
+      "action": "idle",
       "progress": 0,
-      "currentStation": "desk",
+      "currentStation": "terminal",
       "ptyId": "pty-god",
       "command": "opencode --model claude-opus-4-8",
       "provider": "opencode",
