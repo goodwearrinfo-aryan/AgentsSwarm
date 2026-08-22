@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "savedAt": "2026-08-18T09:53:16.327Z",
+  "agents": [
+    {
+      "id": "god",
+      "name": "Michael",
+      "character": "michael",
+      "accent": "lemon",
+      "description": "on standby",
+      "project": "hive",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm",
+      "status": "working",
+      "action": "using bash",
+      "progress": 0,
+      "currentStation": "terminal",
+      "ptyId": "pty-god",
+      "command": "opencode --model claude-opus-4-8",
+      "provider": "opencode",
+      "model": "claude-opus-4-8",
+      "isGod": true,
+      "carrying": "Bash",
+      "lastPrompt": "yes"
+    },
+    {
+      "id": "jim-msyh6cu8",
+      "name": "Jim",
+      "character": "jim",
+      "accent": "sky",
+      "description": "on standby",
+      "project": "jim-msyh6cu8",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "goal": "Research the questions you are given across multiple sources, verify the key claims, and return a concise, cited summary.",
+      "status": "idle",
+      "action": "awaiting",
+      "progress": 0,
+      "currentStation": "desk",
+      "ptyId": "pty-jim-msyh6cu8",
+      "command": "opencode",
+      "provider": "opencode",
+      "worktreePath": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "lastPrompt": "go"
+    }
+  ],
+  "archived": [],
+  "restorable": [],
+  "queues": {
+    "jim-msyh6cu8": [
+      {
+        "id": "q-1787046627822-2",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787046627822
+      },
+      {
+        "id": "q-1787046687825-3",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787046687825
+      }
+    ],
+    "god": [
+      {
+        "id": "q-1787046795826-4",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787046795826
+      }
+    ]
+  },
+  "selectedId": "jim-msyh6cu8"
+}

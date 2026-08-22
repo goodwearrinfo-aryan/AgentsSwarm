@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "savedAt": "2026-08-18T09:44:09.684Z",
+  "agents": [
+    {
+      "id": "god",
+      "name": "Michael",
+      "character": "michael",
+      "accent": "lemon",
+      "description": "on standby",
+      "project": "hive",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm",
+      "status": "working",
+      "action": "using bash",
+      "progress": 0,
+      "currentStation": "terminal",
+      "ptyId": "pty-god",
+      "command": "opencode --model claude-opus-4-8",
+      "provider": "opencode",
+      "model": "claude-opus-4-8",
+      "isGod": true,
+      "carrying": "Bash",
+      "lastPrompt": "use github and nvidia api keys"
+    },
+    {
+      "id": "jim-msyh6cu8",
+      "name": "Jim",
+      "character": "jim",
+      "accent": "sky",
+      "description": "on standby",
+      "project": "jim-msyh6cu8",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "goal": "Research the questions you are given across multiple sources, verify the key claims, and return a concise, cited summary.",
+      "status": "working",
+      "action": "using filesystem_list_directory",
+      "progress": 0,
+      "currentStation": "shelf",
+      "ptyId": "pty-jim-msyh6cu8",
+      "command": "opencode",
+      "provider": "opencode",
+      "worktreePath": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "carrying": "Read"
+    }
+  ],
+  "archived": [],
+  "restorable": [],
+  "queues": {},
+  "selectedId": "god"
+}

@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "savedAt": "2026-08-18T10:47:08.788Z",
+  "agents": [
+    {
+      "id": "god",
+      "name": "Michael",
+      "character": "michael",
+      "accent": "lemon",
+      "description": "on standby",
+      "project": "hive",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm",
+      "status": "working",
+      "action": "using bash",
+      "progress": 0,
+      "currentStation": "terminal",
+      "ptyId": "pty-god",
+      "command": "opencode --model claude-opus-4-8",
+      "provider": "opencode",
+      "model": "claude-opus-4-8",
+      "isGod": true,
+      "carrying": "Bash",
+      "lastPrompt": "creat more workers and more repos to sync"
+    },
+    {
+      "id": "jim-msyh6cu8",
+      "name": "Jim",
+      "character": "jim",
+      "accent": "sky",
+      "description": "on standby",
+      "project": "jim-msyh6cu8",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "goal": "Research the questions you are given across multiple sources, verify the key claims, and return a concise, cited summary.",
+      "status": "looping",
+      "action": "looping: 8× identical tool call (bash)",
+      "progress": 0,
+      "currentStation": "desk",
+      "ptyId": "pty-jim-msyh6cu8",
+      "command": "opencode",
+      "provider": "opencode",
+      "worktreePath": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "lastPrompt": "do as said"
+    },
+    {
+      "id": "pam-msyj5z8f",
+      "name": "Pam",
+      "character": "pam",
+      "accent": "sky",
+      "description": "tip \u001b[23;17HPress \u001b[23;23Hctrl+p\u001b[23;29H to see all available actions and commands\u001b[27;11H                                                            \u001b[28;16H\u001b",
+      "project": "trading-bot",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/trading-bot",
+      "goal": "Track what has shipped since the last release, update the changelog and version, and draft clear release notes.",
+      "status": "looping",
+      "action": "looping: 9× identical tool call (read)",
+      "progress": 0,
+      "currentStation": "shelf",
+      "ptyId": "pty-pam-msyj5z8f",
+      "command": "opencode",
+      "provider": "opencode"
+    },
+    {
+      "id": "dwight-msyj7d6l",
+      "name": "Dwight",
+      "character": "dwight",
+      "accent": "sky",
+      "description": "on standby",
+      "project": "geopolitical-data-generator",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/geopolitical-data-generator",
+      "goal": "Track what has shipped since the last release, update the changelog and version, and draft clear release notes.",
+      "status": "idle",
+      "action": "idle",
+      "progress": 0,
+      "currentStation": "shelf",
+      "ptyId": "pty-dwight-msyj7d6l",
+      "command": "opencode",
+      "provider": "opencode"
+    }
+  ],
+  "archived": [],
+  "restorable": [],
+  "queues": {
+    "jim-msyh6cu8": [
+      {
+        "id": "q-1787049751861-13",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787049751861
+      },
+      {
+        "id": "q-1787049779846-14",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787049779846
+      }
+    ],
+    "pam-msyj5z8f": [
+      {
+        "id": "q-1787049839846-15",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787049839846
+      },
+      {
+        "id": "q-1787049871847-16",
+        "text": "You have new hive inbox message(s) — read your inbox, act on them now, and move handled ones to inbox/.done/. Act autonomously; only message god if you genuinely need a decision.",
+        "ts": 1787049871847
+      }
+    ]
+  },
+  "selectedId": "pam-msyj5z8f"
+}

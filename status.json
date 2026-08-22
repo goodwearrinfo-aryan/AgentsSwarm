@@ -1,0 +1,34 @@
+{
+  "timestamp": "2026-08-22T22:45:42.841577Z",
+  "ci": {
+    "conclusion": "cancelled",
+    "createdAt": "2026-08-18T14:41:49Z",
+    "headBranch": "main",
+    "status": "completed"
+  },
+  "agents": [],
+  "tasks": [],
+  "recent_outputs": [],
+  "blocked": [
+    {
+      "task": "task-2",
+      "reason": "GitHub Secrets for staging deploy",
+      "owner": "human"
+    },
+    {
+      "task": "task-3",
+      "reason": "GPU runner decision (self-hosted vs optional)",
+      "owner": "human"
+    }
+  ],
+  "circuit_breakers": {
+    "all_healthy": true,
+    "details": {}
+  },
+  "urls": {
+    "status_json": "https://goodwearrinfo-aryan.github.io/AgentsSwarm/status.json",
+    "html_viewer": "https://goodwearrinfo-aryan.github.io/AgentsSwarm/",
+    "repo": "https://github.com/goodwearrinfo-aryan/AgentsSwarm",
+    "actions": "https://github.com/goodwearrinfo-aryan/AgentsSwarm/actions"
+  }
+}

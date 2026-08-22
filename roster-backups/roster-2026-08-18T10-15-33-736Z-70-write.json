@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "savedAt": "2026-08-18T10:14:19.102Z",
+  "agents": [
+    {
+      "id": "god",
+      "name": "Michael",
+      "character": "michael",
+      "accent": "lemon",
+      "description": "on standby",
+      "project": "hive",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm",
+      "status": "idle",
+      "action": "awaiting",
+      "progress": 0,
+      "currentStation": "desk",
+      "ptyId": "pty-god",
+      "command": "opencode --model claude-opus-4-8",
+      "provider": "opencode",
+      "model": "claude-opus-4-8",
+      "isGod": true,
+      "lastPrompt": "yes"
+    },
+    {
+      "id": "jim-msyh6cu8",
+      "name": "Jim",
+      "character": "jim",
+      "accent": "sky",
+      "description": "on standby",
+      "project": "jim-msyh6cu8",
+      "tmuxTarget": "",
+      "cwd": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "goal": "Research the questions you are given across multiple sources, verify the key claims, and return a concise, cited summary.",
+      "status": "idle",
+      "action": "idle",
+      "progress": 0,
+      "currentStation": "terminal",
+      "ptyId": "pty-jim-msyh6cu8",
+      "command": "opencode",
+      "provider": "opencode",
+      "worktreePath": "/Users/aryanagarwal/AgentsSwarm/worktrees/jim-msyh6cu8",
+      "lastPrompt": "go"
+    }
+  ],
+  "archived": [],
+  "restorable": [],
+  "queues": {},
+  "selectedId": "god"
+}

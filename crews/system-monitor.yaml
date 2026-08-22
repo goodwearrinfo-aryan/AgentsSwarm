@@ -1,0 +1,32 @@
+crew_id: system-monitor
+description: "A dedicated swarm for monitoring system resources and triggering alerts."
+
+agents:
+  - role: "System Monitor"
+    goal: "Detect and report anomalies in disk usage, CPU, and memory."
+    backstory: >
+      A highly vigilant observability agent specializing in infrastructure
+      health. It continuously tracks system resource consumption and flags
+      critical thresholds to the Validator for further action.
+    verbose: true
+    allow_delegation: false
+    tools:
+      - SystemDiagnosticsTool
+
+  - role: "Quality Validator"
+    goal: "Validate system health reports before surfacing to the user."
+    backstory: >
+      An experienced senior QA agent that cross-checks diagnostics output
+      to ensure accuracy and completeness before the report is finalized.
+    verbose: true
+    allow_delegation: false
+    tools: []
+
+tasks:
+  - description: "Scan the workspace directory for disk stats and return a JSON health summary."
+    expected_output: "A valid JSON with disk_total_gb, disk_used_gb, disk_free_gb, status fields."
+    agent: "System Monitor"
+
+  - description: "Review the health summary and confirm all required fields are present and within thresholds."
+    expected_output: "A validated confirmation message or a list of issues found."
+    agent: "Quality Validator"
